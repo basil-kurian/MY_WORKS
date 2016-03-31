@@ -10,7 +10,6 @@
 
 source ssh_tunnel.conf
 
-PROCESSTUNNEL=""
 case $1 in
 ACPU)
 	DESTINATION_MACHINE_IP=$ACPUIP
@@ -45,9 +44,25 @@ ACPU2P2)
 	PROCESSTUNNEL2="-L9001:localhost:9001"
   ;;
  *)
-	$0 $PROFILE
-	exit 0;
+	# 
+	# This can lead to infinite call, But i am lazy to check :P
+	# Please press cntrl + c to kill the script
+	#
+	if [ -z $2 ]
+	then
+		$0 $PROFILE 1;
+		exit 0;
+	fi
+	echo "" >&2
+	echo "Please provide a valid profile name" >&2
+	exit 1;
 esac
+
+if [ "$MAINTENANCEREQUIRED" == "YES" ] 
+then
+	PROCESSTUNNEL1="$PROCESSTUNNEL1 -L8084:localhost:8084"
+	PROCESSTUNNEL2="$PROCESSTUNNEL2 -L8084:localhost:8084"
+fi
 
 #
 # Create Tunnel
