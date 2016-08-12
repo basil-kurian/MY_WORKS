@@ -1,0 +1,3 @@
+rootProject.name = 'database_utils'
+include 'query_generator'
+
