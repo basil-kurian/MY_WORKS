@@ -12,6 +12,7 @@ public class TableWrapper implements com.bzllib.tools.utils.db.Table {
     Class<?> clazz;
 
     List<Column> updateColumns = new ArrayList<>();
+    // List to maintain order. Else Map was more suitable
     List<Column> columns = new ArrayList<>();
     List<Column> primaryKeys = new ArrayList<>();
 
@@ -59,7 +60,7 @@ public class TableWrapper implements com.bzllib.tools.utils.db.Table {
     }
 
     private Column processFieldAnnotation(Field field) {
-        return new ColumnParser(field);
+        return new ColumnParserImpl(field);
     }
 
     public String getTableName() {
@@ -82,12 +83,12 @@ public class TableWrapper implements com.bzllib.tools.utils.db.Table {
         return this.primaryKeys.toArray(new Column[primaryKeys.size()]);
     }
 
-    // My Own methods
+    // My own methods
     public void addPrimaryKeys(String[] keys){
         for (String key: keys){
             Column column = findColumnWithName(key);
             if (column != null && !column.isPrimaryKey()){
-                ((ColumnParser) column).setPrimaryKey(true);
+                ((ColumnParserImpl) column).setPrimaryKey(true);
                 primaryKeys.add(column);
             }
         }
